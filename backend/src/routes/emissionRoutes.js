@@ -76,4 +76,66 @@ router.post("/", async (req, res) => {
   }
 });
 
+router.put("/:id/override", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { new_emission, reason } = req.body;
+
+    const existingRecord = await pool.query(
+      `
+      SELECT *
+      FROM emission_records
+      WHERE id = $1
+      `,
+      [id]
+    );
+
+    if (existingRecord.rows.length === 0) {
+      return res.status(404).json({
+        message: "Record not found",
+      });
+    }
+
+    const oldValue =
+      existingRecord.rows[0].calculated_emission;
+
+    await pool.query(
+      `
+      UPDATE emission_records
+      SET calculated_emission = $1
+      WHERE id = $2
+      `,
+      [new_emission, id]
+    );
+
+    await pool.query(
+      `
+      INSERT INTO audit_logs
+      (
+        record_id,
+        old_value,
+        new_value,
+        reason
+      )
+      VALUES ($1,$2,$3,$4)
+      `,
+      [
+        id,
+        oldValue,
+        new_emission,
+        reason,
+      ]
+    );
+
+    res.json({
+      message: "Emission overridden successfully",
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      message: "Server Error",
+    });
+  }
+});
+
 module.exports = router;

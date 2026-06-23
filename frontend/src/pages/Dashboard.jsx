@@ -1,6 +1,10 @@
 import React from "react";
 import YoYChart from "../charts/YoYChart";
 import HotspotChart from "../charts/HotspotChart";
+import MonthlyTrendChart from "../charts/MonthlyTrendChart";
+import KPICard from "../components/KPICard";
+import IntensityCard from "../components/IntensityCard"; 
+
 const Dashboard = () => {
   return (
     <div
@@ -14,6 +18,7 @@ const Dashboard = () => {
 
       <div>
         <h2>Emission Intensity KPI</h2>
+        <IntensityCard />
       </div>
 
       <div>
@@ -28,6 +33,7 @@ const Dashboard = () => {
 
       <div>
         <h2>Monthly Emission Trends</h2>
+        <MonthlyTrendChart />
       </div>
     </div>
   );
