@@ -9,6 +9,7 @@ import {
   Tooltip,
   ResponsiveContainer,
   CartesianGrid,
+  Legend,
 } from "recharts";
 
 const YoYChart = () => {
@@ -21,7 +22,25 @@ const YoYChart = () => {
   const fetchYoY = async () => {
     try {
       const response = await API.get("/analytics/yoy");
-      setData(response.data);
+
+      const transformed = {};
+
+      response.data.forEach((row) => {
+        const year = row.year;
+
+        if (!transformed[year]) {
+          transformed[year] = {
+            year,
+            "Scope 1": 0,
+            "Scope 2": 0,
+          };
+        }
+
+        transformed[year][row.scope] =
+          Number(row.total_emission);
+      });
+
+      setData(Object.values(transformed));
     } catch (error) {
       console.error(error);
     }
@@ -32,10 +51,24 @@ const YoYChart = () => {
       <ResponsiveContainer width="100%" height="100%">
         <BarChart data={data}>
           <CartesianGrid strokeDasharray="3 3" />
+
           <XAxis dataKey="year" />
+
           <YAxis />
+
           <Tooltip />
-          <Bar dataKey="total_emission" />
+
+          <Legend />
+
+          <Bar
+            dataKey="Scope 1"
+            stackId="a"
+          />
+
+          <Bar
+            dataKey="Scope 2"
+            stackId="a"
+          />
         </BarChart>
       </ResponsiveContainer>
     </div>

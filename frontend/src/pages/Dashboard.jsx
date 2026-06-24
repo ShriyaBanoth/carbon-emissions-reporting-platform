@@ -3,6 +3,8 @@ import IntensityCard from "../components/IntensityCard";
 import YoYChart from "../charts/YoYChart";
 import HotspotChart from "../charts/HotspotChart";
 import MonthlyTrendChart from "../charts/MonthlyTrendChart";
+import EmissionForm from "../components/EmissionForm";
+import BusinessMetricForm from "../components/BusinessMetricForm";
 
 const Dashboard = () => {
   return (
@@ -14,6 +16,8 @@ const Dashboard = () => {
       }}
     >
       <h1>Carbon Emissions Reporting Platform</h1>
+      <EmissionForm />
+      <BusinessMetricForm />
 
       <div style={{ marginBottom: "30px" }}>
         <IntensityCard />
